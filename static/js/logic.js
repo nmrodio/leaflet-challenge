@@ -1,7 +1,7 @@
 // Creating map
 let map = L.map('map', {
     center: [40.7608, -111.8910],
-    zoom: 5
+    zoom: 4
 });
 
 // Add a tile layer to the map
@@ -33,8 +33,6 @@ function earthquakeMarkerColors(depth){
     }
 };
 
-
-
 // Looping through features to grab lat,long, and depth of each earthquake
 for (let i = 0; i < data.features.length; i++) {
 
@@ -45,47 +43,31 @@ for (let i = 0; i < data.features.length; i++) {
               fillOpacity: 1,
               color: 'black',
               fillColor: earthquakeMarkerColors(data.features[i].geometry.coordinates[2]),
-              radius: data.features[i].properties.mag *11000 // Radius of each circle is based on magnitude
+              radius: data.features[i].properties.mag *12500 // Radius of each circle is based on magnitude
     // Applying popups for each data point to display the location, magnitude, and depth of each earthquake    
     }).bindPopup(`<h3>Location: ${data.features[i].properties.place}</h3><hr><h3>Magnitude: ${data.features[i].properties.mag}</h3><hr><h3>Depth: ${data.features[i].geometry.coordinates[2]}</h3>`)
       .addTo(map);
 };
 
 
-// Setting up and defining legend to be displayed in bottomright corner of map
-let legend = L.control({ position: "bottomright" });
-legend.onAdd = function() {
-  let div = L.DomUtil.create("div", "info legend");
-  let legendElement = geojson.options.legendElement;
-  let colors = geojson.options.colors;
-  let labels = [];
+  // Setting up and defining legend to be displayed in bottomright corner of map
+  var legend = L.control({ position: "bottomright" });
+  legend.onAdd = function() {
+    var div = L.DomUtil.create("div", "info legend");
+    var legendElement = ["-10-10", "10-30", "30-50", "50-70", "70-90", "90+"];
+    var colors = ["#A1DE35", "#ECF60C", "#E0BE14", "#E6AA21", "#E69521", "#D64228"];
 
 
-// Defining what the legend will contain
-let legendInfo = "<div class=\"labels\">" +
-        "<div class=\"element1\">" + legendElement[0] + "</div>" +
-        "<div class=\"element2\">" + legendElement[1] + "</div>" +
-        "<div class=\"element3\">" + legendElement[2] + "</div>" +
-        "<div class=\"element4\">" + legendElement[3] + "</div>" +
-        "<div class=\"element5\">" + legendElement[4] + "</div>" +
-        "<div class=\"element6\">" + legendElement[5] + "</div>" +
-      "</div>";
-
-      div.innerHTML = legendInfo;
-
-    limits.forEach(function(limit, index) {
-      labels.push("<li style=\"background-color: " + colors[index] + "\"></li>");
-    });
-
-    div.innerHTML += "<ul>" + labels.join("") + "</ul>";
+    for (let i = 0; i< legendElement.length; i++){
+       div.innerHTML += '<i style = "background: '+ colors[i] + '"></i>' + legendElement[i] + "<br>"
+    }
     return div;
+  };
 
-};
-// Add the legend to the map
+  // Add the legend to the map
+  legend.addTo(map);
 
- legend.addTo(map)
-
-});
+ });
 
 
 
